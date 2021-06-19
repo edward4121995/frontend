@@ -1,34 +1,52 @@
 <template>
-  <h1>Todo List</h1>
-  <div>
-  <input v-model="myText">
-  <button @click="tambah">Add</button>
-  <ul>
-    <li v-for='item in todos'>{{ item.desc }}</li>
-  </ul>
-  </div>
+    <div>
+        <div>TUGAS WEB UAS</div>
+        <ul>
+            <li v-for="item in todos" :key="item.id">{{item.deskripsi}}<button @click="hapus(item.id)">X</button></li>
+        </ul>
+            <input v-model ="myText" name="deskripsi"/>
+            <button @click="tambah">Tambah</button>
+    </div>
 </template>
 
-<script >
+<script>
+import axios from 'axios'
 
 export default{
-  data: function(){
-    return {
-      todos: [
-        {desc: 'Bangun Tidur'},
-        {desc: 'Mandi'},
-        {desc: 'Makan'}
-      ],
-      myText : ''
-    }
+  data : function()
+  {
+        return{
+          todos : [],
+          myText: ' '
+        }
   },
+
+  created : function()
+    {
+      axios.get('http://localhost:3000/')
+      .then(result=>{
+        this.todos = result.data
+      })
+    },
+
   methods: {
-    tambah: function(){
-      this.todos.push({ desc: this.myText})
+    tambah: function()
+    {
+      const newItem = {deskripsi:this.myText}
+      axios.post('http://localhost:3000/',newItem)
+        this.todos.push(newItem)
+        this.myText=""
+    },
+      hapus: function(id)
+      {
+        axios.delete(`http://localhost:3000/${id}`)
+        location.reload()
+      }
+      
     }
   }
-}
 
 </script>
+
 
 
